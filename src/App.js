@@ -1,25 +1,55 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import styled, { ThemeProvider } from "styled-components";
+import { Menu } from "./components/menu"
+import { NavBar } from "./components/NavBar"
+import { darkTheme, lightTheme } from "./utils/Theme";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from 'react-router-dom';
+import { Home } from "./pages/Home";
+import { Video } from "./pages/Video";
+import { Signin } from './pages/Signin';
 
-function App() {
+const Container = styled.div`
+display:flex;
+margin: -10px -10px;
+background-color:  ${({ theme }) => theme.bg};
+height: 100%;`
+
+const Main = styled.div`
+flex: 7;
+background-color: ${({ theme }) => theme.bg};
+color: #fff;`
+const Wrapper = styled.div`
+padding: 22px 96px;`
+
+export const App = () => {
+  const [darkMode, setDarkMode] = useState(true);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+      <Container>
+        <BrowserRouter>
+          <Menu setDarkMode={setDarkMode} darkMode={darkMode} />
+          <Main>
+            <NavBar darkMode={darkMode} />
+            <Wrapper>
+              <Routes>
+                <Route path="/" exact={true}>
+                  <Route index element={<Home />} />
+                  <Route path="/signin" element={<Signin />} />
+                  <Route path="/video" >
+                    <Route path="/video/:videoId" element={<Video />} />
+                  </Route>
+                </Route>
+              </Routes>
+            </Wrapper>
+          </Main>
+        </BrowserRouter>
+      </Container>
+    </ThemeProvider>
   );
 }
 
-export default App;
